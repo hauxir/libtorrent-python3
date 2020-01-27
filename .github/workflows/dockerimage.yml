@@ -17,10 +17,10 @@ jobs:
 
       - name: Build :lastest
         if: success()
-        run: docker build -t libtorrent-python3:latest .
+        run: docker build -t hauxir/libtorrent-python3:latest .
         
       - name: Push to docker hub :latest
         if: success()
         uses: actions-hub/docker@master
         with:
-          args: push libtorrent-python3:latest
+          args: push hauxir/libtorrent-python3:latest

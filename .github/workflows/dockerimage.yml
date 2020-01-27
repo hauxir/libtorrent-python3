@@ -1,13 +1,27 @@
-- name: Login to docker hub
-  uses: actions-hub/docker/login@master
-  env:
-    DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-    DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-- name: Build :latest
-  run: docker build -t ${GITHUB_REPOSITORY}:latest .
+name: Docker registry
 
-- name: Push to docker hub :latest
-  uses: actions-hub/docker@master
-  with:
-    args: push ${GITHUB_REPOSITORY}:latest
+on: [push]
+
+jobs:
+  github:
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Login to docker hub
+        uses: actions-hub/docker/login@master
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_REGISTRY_URL: registry.hub.docker.com
+
+      - name: Build :lastest
+        if: success()
+        run: docker build -t libtorrent-python3:latest .
+        
+      - name: Push to docker hub :latest
+        if: success()
+        uses: actions-hub/docker@master
+        with:
+          args: push libtorrent-python3:latest
